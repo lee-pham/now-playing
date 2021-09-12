@@ -76,8 +76,8 @@ def output_song_information(album_art: img, os: bool) -> None:
     # print(pixels)
     if os:
         sense.set_pixels(pixels)
-    else:
-        scaled_album_art.show()
+    # else:
+    # scaled_album_art.show()
 
 
 currently_playing = [1, 2, 3, 4]
