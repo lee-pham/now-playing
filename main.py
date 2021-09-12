@@ -54,6 +54,8 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
     raw_payload = response.content
     if http_status_code not in {200, 204}:
         print("NON 202/204 RECEIVED:", datetime.now(), response, response.content)
+        return blank_image_url, Image.open(
+            BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
     if "expired" in str(response):
         print(datetime.now(), response)
         return blank_image_url, Image.open(BytesIO(requests.get(blank_image_url).content)), "", ""
