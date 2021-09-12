@@ -70,8 +70,6 @@ def get_currently_playing(token: str) -> Tuple[str, img, str, str]:
     album_art = Image.open(BytesIO(image_response.content))
 
     return image_url, album_art, information_string, uri
-
-
 def output_song_information(album_art: img, os: bool) -> None:
     scaled_album_art = album_art.resize((8, 8)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
@@ -99,3 +97,4 @@ while True:
     time.sleep(1)
 
 print("Goodbye, world.")
+print("1")
