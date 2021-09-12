@@ -93,7 +93,8 @@ while True:
         currently_playing = new_song
 
     c += 1
-    if c > 3500:
+    if c > 3000:
+        a = Refresh()
         token = a.refresh()
         c = 0
 
