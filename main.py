@@ -97,4 +97,3 @@ while True:
     time.sleep(1)
 
 print("Goodbye, world.")
-print("1")
