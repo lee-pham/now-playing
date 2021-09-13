@@ -64,15 +64,19 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
         return blank_image_url, Image.open(
             BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
     payload = json.loads(raw_payload)
-    uri = payload["item"].get("uri", "")
-    song_name = payload["item"].get("name", "")
-    album_name = payload["item"]["album"].get("name")
-    artist_name = ", ".join([artist.get("name", "") for artist in payload["item"].get("artists", "")])
-    information_string = f"Now playing: {song_name} from {album_name} by {artist_name}"
-    image_url = payload["item"]["album"]["images"][2].get("url", "")
-    image_response = requests.get(image_url)
-    album_art = Image.open(BytesIO(image_response.content))
-    return image_url, album_art, information_string, uri
+    if payload:
+        uri = payload["item"].get("uri", "")
+        song_name = payload["item"].get("name", "")
+        album_name = payload["item"]["album"].get("name")
+        artist_name = ", ".join([artist.get("name", "") for artist in payload["item"].get("artists", "")])
+        information_string = f"Now playing: {song_name} from {album_name} by {artist_name}"
+        image_url = payload["item"]["album"]["images"][2].get("url", "")
+        image_response = requests.get(image_url)
+        album_art = Image.open(BytesIO(image_response.content))
+        return image_url, album_art, information_string, uri
+    else:
+        return blank_image_url, Image.open(
+            BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
 
 
 def output_song_information(album_art: img, os: bool) -> None:
