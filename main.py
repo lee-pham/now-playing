@@ -65,6 +65,8 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
             BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
     payload = json.loads(raw_payload)
     if payload:
+        if not payload["item"]:
+            return blank_image_url, Image.open(BytesIO(requests.get(blank_image_url).content)), "", ""
         uri = payload["item"].get("uri", "")
         song_name = payload["item"].get("name", "")
         album_name = payload["item"]["album"].get("name")
