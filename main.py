@@ -85,11 +85,11 @@ led_square = [
 def set_pixels(led_map, pixel_list):
     headers = {'content-type': 'application/json'}
     data = {
-        "id": 15,
+        "id": 16,
         "data": [item for sublist in pixel_list for item in sublist]
     }
-    requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-
+    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+    print(res.content)
 
 
 def output_song_information(album_art: img) -> None:
