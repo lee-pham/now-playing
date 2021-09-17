@@ -97,7 +97,7 @@ def set_pixels(led_map, pixel_list):
 
 
 def output_song_information(album_art: img) -> None:
-    scaled_album_art = album_art.resize((8, 8)).convert("RGB")
+    scaled_album_art = album_art.resize((4, 4)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
     set_pixels(led_square, pixels)
 
