@@ -9,12 +9,6 @@ from PIL import Image
 
 img = Image.Image
 
-is_rpi = platform.system() == "Linux"
-if is_rpi:
-    from sense_hat import SenseHat
-
-    sense = SenseHat()
-
 from secrets import refresh_token, base_64
 import requests
 import json
@@ -81,14 +75,32 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
             BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
 
 
+led_square = [
+    20, 21, 22, 23,
+    34, 35, 36, 37,
+    49, 50, 51, 52,
+    63, 64, 65, 66
+]
+
+
+def set_pixels(led_map, pixel_list):
+    headers = {'content-type': 'application/json'}
+    for i in range(len(led_map)):
+        r, g, b = pixel_list[i]
+        led = led_map[i]
+        data = {
+            "id": 10,
+            "data": [r, g, b, led, led + 1]
+        }
+        requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+        time.sleep(.3)
+
+
 def output_song_information(album_art: img, os: bool) -> None:
     scaled_album_art = album_art.resize((8, 8)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
-    # print(pixels)
-    if os:
-        sense.set_pixels(pixels)
-    else:
-        scaled_album_art.show()
+    scaled_album_art.show()
+    set_pixels(led_square, pixels)
 
 
 currently_playing = [1, 2, 3, 4]
