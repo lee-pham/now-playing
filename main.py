@@ -95,8 +95,8 @@ c = 0
 while True:
     new_song = get_currently_playing()
     if new_song[3] != currently_playing[3]:
-        output_song_information(new_song[1])
         print(new_song[2])
+        output_song_information(new_song[1])
         currently_playing = new_song
 
     c += 1
