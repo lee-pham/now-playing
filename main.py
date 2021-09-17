@@ -74,15 +74,7 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
             BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
 
 
-led_square = [
-    20, 21, 22, 23,
-    34, 35, 36, 37,
-    49, 50, 51, 52,
-    63, 64, 65, 66
-]
-
-
-def set_pixels(led_map, pixel_list):
+def set_pixels(pixel_list):
     headers = {'content-type': 'application/json'}
     data = {
         "id": 16,
@@ -95,7 +87,7 @@ def set_pixels(led_map, pixel_list):
 def output_song_information(album_art: img) -> None:
     scaled_album_art = album_art.resize((4, 4)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
-    set_pixels(led_square, pixels)
+    set_pixels(pixels)
 
 
 currently_playing = [1, 2, 3, 4]
