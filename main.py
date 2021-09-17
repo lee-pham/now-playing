@@ -80,6 +80,7 @@ def set_pixels(pixel_list):
         "id": 16,
         "data": [item for sublist in pixel_list for item in sublist]
     }
+    print(data["data"])
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
     print(res.content)
 
