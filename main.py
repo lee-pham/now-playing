@@ -1,4 +1,3 @@
-import platform
 import pprint
 import time
 from datetime import datetime
@@ -86,14 +85,12 @@ led_square = [
 def set_pixels(led_map, pixel_list):
     headers = {'content-type': 'application/json'}
     for i in range(len(led_map)):
-        r, g, b = pixel_list[i]
-        led = led_map[i]
         data = {
-            "id": 10,
-            "data": [r, g, b, led, led + 1]
+            id: 15,
+            data: [item for sublist in pixel_list for item in sublist]
         }
         requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-        time.sleep(.3)
+
 
 
 def output_song_information(album_art: img) -> None:
@@ -112,7 +109,7 @@ while True:
         currently_playing = new_song
 
     c += 1
-    if c > 3000:
+    if c > 1800:
         a = Refresh()
         token = a.refresh()
         c = 0
