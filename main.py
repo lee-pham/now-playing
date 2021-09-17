@@ -86,8 +86,8 @@ def set_pixels(led_map, pixel_list):
     headers = {'content-type': 'application/json'}
     for i in range(len(led_map)):
         data = {
-            id: 15,
-            data: [item for sublist in pixel_list for item in sublist]
+            "id": 15,
+            "data": [item for sublist in pixel_list for item in sublist]
         }
         requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
 
