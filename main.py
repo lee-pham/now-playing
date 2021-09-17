@@ -83,12 +83,14 @@ def set_pixels(pixel_list):
     print(data["data"])
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
     print(res.content)
+    return
 
 
 def output_song_information(album_art: img) -> None:
     scaled_album_art = album_art.resize((4, 4)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
     set_pixels(pixels)
+    return
 
 
 currently_playing = [1, 2, 3, 4]
