@@ -96,10 +96,9 @@ def set_pixels(led_map, pixel_list):
         time.sleep(.3)
 
 
-def output_song_information(album_art: img, os: bool) -> None:
+def output_song_information(album_art: img) -> None:
     scaled_album_art = album_art.resize((8, 8)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
-    scaled_album_art.show()
     set_pixels(led_square, pixels)
 
 
@@ -108,7 +107,7 @@ c = 0
 while True:
     new_song = get_currently_playing()
     if new_song[3] != currently_playing[3]:
-        output_song_information(new_song[1], is_rpi)
+        output_song_information(new_song[1])
         print(new_song[2])
         currently_playing = new_song
 
