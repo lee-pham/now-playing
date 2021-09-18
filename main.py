@@ -35,6 +35,9 @@ a = Refresh()
 print('Hello, world!')
 token = a.refresh()
 
+blank_image_url = "https://via.placeholder.com/8/000000/000000"
+blank_image = Image.open(BytesIO(requests.get(blank_image_url).content))
+
 
 def get_currently_playing() -> Tuple[str, img, str, str]:
     response = requests.get("https://api.spotify.com/v1/me/player/currently-playing?market=US", headers={
@@ -42,24 +45,21 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
         "Content-Type": "application/json",
         "Authorization": f"Bearer {token}"
     })
-    blank_image_url = "https://via.placeholder.com/8/000000/000000"
     http_status_code = response.status_code
     raw_payload = response.content
     if http_status_code not in {200, 204}:
         print("NON 202/204 RECEIVED:", datetime.now(), response, response.content)
-        return blank_image_url, Image.open(
-            BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
+        return blank_image_url, blank_image, "No song is currently playing.", ""
     if "expired" in str(response):
         print(datetime.now(), response)
-        return blank_image_url, Image.open(BytesIO(requests.get(blank_image_url).content)), "", ""
+        return blank_image_url, blank_image, "", ""
 
     if not raw_payload:
-        return blank_image_url, Image.open(
-            BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
+        return blank_image_url, blank_image, "No song is currently playing.", ""
     payload = json.loads(raw_payload)
     if payload:
         if not payload["item"]:
-            return blank_image_url, Image.open(BytesIO(requests.get(blank_image_url).content)), "", ""
+            return blank_image_url, blank_image, "", ""
         uri = payload["item"].get("uri", "")
         song_name = payload["item"].get("name", "")
         album_name = payload["item"]["album"].get("name")
@@ -70,8 +70,7 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
         album_art = Image.open(BytesIO(image_response.content))
         return image_url, album_art, information_string, uri
     else:
-        return blank_image_url, Image.open(
-            BytesIO(requests.get(blank_image_url).content)), "No song is currently playing.", ""
+        return blank_image_url, blank_image, "No song is currently playing.", ""
 
 
 def set_pixels(pixel_list):
@@ -80,21 +79,16 @@ def set_pixels(pixel_list):
         "id": 16,
         "data": [item for sublist in pixel_list for item in sublist][:24]
     }
-    # print(data["data"])
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-    print(data["data"])
-    print("!!!!!!!!!!!", res.content)
+
+    time.sleep(.2)
 
     headers = {'content-type': 'application/json'}
     data = {
         "id": 17,
         "data": [item for sublist in pixel_list for item in sublist][24:]
     }
-    # print(data["data"])
-    time.sleep(.15)
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-    print(data["data"])
-    print("!!!!!!!!!!!", res.content)
     return
 
 
