@@ -115,5 +115,3 @@ while True:
         c = 0
 
     time.sleep(1)
-
-print("Goodbye, world.")
