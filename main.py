@@ -97,7 +97,7 @@ def set_pixels(pixel_list):
     headers = {'content-type': 'application/json'}
     data = {
         "id": 19,
-        "data": [item for sublist in pixel_list for item in sublist][48:]
+        "data": [item for sublist in pixel_list for item in sublist][48:72]
     }
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
 
