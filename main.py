@@ -88,9 +88,21 @@ def set_pixels(pixel_list):
     headers = {'content-type': 'application/json'}
     data = {
         "id": 17,
-        "data": [item for sublist in pixel_list for item in sublist][24:]
+        "data": [item for sublist in pixel_list for item in sublist][24:48]
     }
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+
+    time.sleep(cd)
+
+    headers = {'content-type': 'application/json'}
+    data = {
+        "id": 19,
+        "data": [item for sublist in pixel_list for item in sublist][48:]
+    }
+    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+
+    time.sleep(cd)
+
     return
 
 
@@ -107,7 +119,7 @@ def set_accent(rgb):
 
 
 def output_song_information(album_art: img) -> None:
-    scaled_album_art = album_art.resize((4, 4)).convert("RGB")
+    scaled_album_art = album_art.resize((5, 5)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
     set_pixels(pixels)
     return
