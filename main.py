@@ -77,32 +77,19 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
 
 def set_pixels(pixel_list):
     headers = {'content-type': 'application/json'}
-    data = {
-        "id": 16,
-        "data": [item for sublist in pixel_list for item in sublist][:24]
-    }
-    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+    buffer_length = len(pixel_list)
+    n = 24
+    total_packets = [pixel_list[i * n:(i + 1) * n] for i in range(len(buffer_length))]
+    register = 0
+    for pixel_list in total_packets:
+        data = {
+            "id": 16,
+            "data": [register] + [item for sublist in pixel_list for item in sublist][:24]
+        }
+        res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
 
-    time.sleep(cd)
-
-    headers = {'content-type': 'application/json'}
-    data = {
-        "id": 17,
-        "data": [item for sublist in pixel_list for item in sublist][24:48]
-    }
-    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-
-    time.sleep(cd)
-
-    headers = {'content-type': 'application/json'}
-    data = {
-        "id": 19,
-        "data": [item for sublist in pixel_list for item in sublist][48:72]
-    }
-    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-
-    time.sleep(cd)
-
+        time.sleep(cd)
+        register += 1
     return
 
 
@@ -119,8 +106,11 @@ def set_accent(rgb):
 
 
 def output_song_information(album_art: img) -> None:
-    scaled_album_art = album_art.resize((5, 5)).convert("RGB")
+    scaled_album_art = album_art.resize((30, 30)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
+    scaled_album_art.show()
+    scaled_album_art.crop((0, 9, 30, 21)).show()
+    pixels = list(scaled_album_art.resize((15, 6)).getdata())
     set_pixels(pixels)
     return
 
@@ -136,7 +126,7 @@ while True:
         album_art = BytesIO(image_response.content)
         color_thief = ColorThief(album_art)
         rgb = color_thief.get_color(quality=1)
-        set_accent(rgb)
+        # set_accent(rgb)
         currently_playing = new_song
 
     c += 1
