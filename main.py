@@ -5,12 +5,14 @@ from io import BytesIO
 from typing import Tuple
 
 from PIL import Image
+from colorthief import ColorThief
 
 img = Image.Image
-
 from secrets import refresh_token, base_64
 import requests
 import json
+
+cd = .2
 
 
 class Refresh:
@@ -81,7 +83,7 @@ def set_pixels(pixel_list):
     }
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
 
-    time.sleep(.2)
+    time.sleep(cd)
 
     headers = {'content-type': 'application/json'}
     data = {
@@ -89,6 +91,18 @@ def set_pixels(pixel_list):
         "data": [item for sublist in pixel_list for item in sublist][24:]
     }
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+    return
+
+
+def set_accent(rgb):
+    headers = {'content-type': 'application/json'}
+    data = {
+        "id": 18,
+        "data": rgb
+    }
+    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
+    print(rgb, res.content)
+    time.sleep(cd)
     return
 
 
@@ -106,6 +120,11 @@ while True:
     if new_song[3] != currently_playing[3]:
         print(new_song[2])
         output_song_information(new_song[1])
+        image_response = requests.get(new_song[0])
+        album_art = BytesIO(image_response.content)
+        color_thief = ColorThief(album_art)
+        rgb = color_thief.get_color(quality=1)
+        set_accent(rgb)
         currently_playing = new_song
 
     c += 1
