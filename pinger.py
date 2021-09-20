@@ -1,48 +1,25 @@
+from split_list_into_list_of_len_n_lists import split_list_into_list_of_len_n_lists
+from convert_24_bit_to_8_bit import convert_24_bit_to_8_bit
 import json
-
 import requests
+import time
+from random import randint
 
-cd = .2
-headers = {'content-type': 'application/json'}
+cd = .21
 
-for i in range(1):
+pixel_list = []
+for i in range(82):
+    pixel_list.append([randint(0, 255), randint(0, 255), randint(0, 255)])
+
+compressed_pixel_list = convert_24_bit_to_8_bit(pixel_list)
+buffer_length = 24
+chunked_payload = split_list_into_list_of_len_n_lists(compressed_pixel_list, buffer_length)
+for register, chunk in enumerate(chunked_payload):
+    headers = {'content-type': 'application/json'}
     data = {
         "id": 16,
-        "data": [3, 255, 255, 255]
+        "data": [register] + chunk
     }
+    time.sleep(cd)
     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
     print(res.content)
-
-# import json
-# import time
-#
-# import requests
-#
-# cd = .2
-# headers = {'content-type': 'application/json'}
-#
-# for i in range(1):
-#     data = {
-#         "id": 10,
-#         "data": [0, 0, 0, 0, 83]
-#     }
-#     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-#     print(res.content)
-#     time.sleep(cd)
-#
-# led_square = [
-#     4, 5, 6, 7, 8,
-#     19, 20, 21, 22, 23,
-#     34, 35, 36, 37, 38,
-#     48, 49, 50, 51, 52,
-#     62, 63, 64, 65, 66
-# ]
-#
-# for led in led_square:
-#     data = {
-#         "id": 10,
-#         "data": [255, 255, 255, led, led + 1]
-#     }
-#     res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-#     print(res.content)
-#     time.sleep(cd)

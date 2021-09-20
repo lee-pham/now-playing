@@ -15,7 +15,7 @@ import json
 from split_list_into_list_of_len_n_lists import split_list_into_list_of_len_n_lists
 from convert_24_bit_to_8_bit import convert_24_bit_to_8_bit
 
-cd = .2
+cd = .21
 
 
 class Refresh:
@@ -88,9 +88,9 @@ def set_pixels(pixel_list):
             "id": 16,
             "data": [register] + chunk
         }
+        time.sleep(cd)
         res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
         print(res.content)
-        time.sleep(cd)
 
     return
 
