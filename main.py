@@ -12,6 +12,9 @@ from secrets import refresh_token, base_64
 import requests
 import json
 
+from split_list_into_list_of_len_n_lists import split_list_into_list_of_len_n_lists
+from convert_24_bit_to_8_bit import convert_24_bit_to_8_bit
+
 cd = .2
 
 
@@ -76,20 +79,19 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
 
 
 def set_pixels(pixel_list):
-    headers = {'content-type': 'application/json'}
-    buffer_length = len(pixel_list)
-    n = 24
-    total_packets = [pixel_list[i * n:(i + 1) * n] for i in range(len(buffer_length))]
-    register = 0
-    for pixel_list in total_packets:
+    compressed_pixel_list = convert_24_bit_to_8_bit(pixel_list)
+    buffer_length = 24
+    chunked_payload = split_list_into_list_of_len_n_lists(compressed_pixel_list, buffer_length)
+    for register, chunk in enumerate(chunked_payload):
+        headers = {'content-type': 'application/json'}
         data = {
             "id": 16,
-            "data": [register] + [item for sublist in pixel_list for item in sublist][:24]
+            "data": [register] + chunk
         }
         res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-
+        print(res.content)
         time.sleep(cd)
-        register += 1
+
     return
 
 
@@ -108,9 +110,9 @@ def set_accent(rgb):
 def output_song_information(album_art: img) -> None:
     scaled_album_art = album_art.resize((30, 30)).convert("RGB")
     pixels = list(scaled_album_art.getdata())
-    scaled_album_art.show()
-    scaled_album_art.crop((0, 9, 30, 21)).show()
-    pixels = list(scaled_album_art.resize((15, 6)).getdata())
+    # scaled_album_art.show()
+    cropped_album_art = scaled_album_art.crop((0, 9, 30, 21))
+    pixels = list(cropped_album_art.resize((15, 6)).getdata())
     set_pixels(pixels)
     return
 
