@@ -2,7 +2,7 @@ import pprint
 import time
 from datetime import datetime
 from io import BytesIO
-from typing import Tuple
+from typing import Tuple, List
 
 from PIL import Image
 from colorthief import ColorThief
@@ -79,7 +79,8 @@ def get_currently_playing() -> Tuple[str, img, str, str]:
 
 
 def set_pixels(pixel_list):
-    compressed_pixel_list = convert_24_bit_to_8_bit(pixel_list)
+    mapped_pixel_list = convert_grid_to_q1(pixel_list)
+    compressed_pixel_list = convert_24_bit_to_8_bit(mapped_pixel_list)
     buffer_length = 24
     chunked_payload = split_list_into_list_of_len_n_lists(compressed_pixel_list, buffer_length)
     for register, chunk in enumerate(chunked_payload):
@@ -95,16 +96,15 @@ def set_pixels(pixel_list):
     return
 
 
-def set_accent(rgb):
-    headers = {'content-type': 'application/json'}
-    data = {
-        "id": 18,
-        "data": rgb
-    }
-    res = requests.post('http://127.0.0.1:9916/command', headers=headers, data=json.dumps(data))
-    print(rgb, res.content)
-    time.sleep(cd)
-    return
+def convert_grid_to_q1(pixel_list: List[List]) -> List[List]:
+    out = []
+    out.extend(pixel_list[:15])
+    out.extend(pixel_list[15:29]), out.extend(pixel_list[30])
+    out.extend(pixel_list[30:45])
+    out.extend(pixel_list[45:58])
+    out.extend(pixel_list[60:72])
+    out.extend(pixel_list[75:78]), out.extend(pixel_list[81]), out.extend(pixel_list[86:])
+    return out
 
 
 def output_song_information(album_art: img) -> None:
