@@ -99,11 +99,11 @@ def set_pixels(pixel_list):
 def convert_grid_to_q1(pixel_list: List[List]) -> List[List]:
     out = []
     out.extend(pixel_list[:15])
-    out.extend(pixel_list[15:29]), out.extend(pixel_list[30])
+    out.extend(pixel_list[15:29]), out.append((pixel_list[30]))
     out.extend(pixel_list[30:45])
     out.extend(pixel_list[45:58])
     out.extend(pixel_list[60:72])
-    out.extend(pixel_list[75:78]), out.extend(pixel_list[81]), out.extend(pixel_list[86:])
+    out.extend(pixel_list[75:78]), out.append((pixel_list[81])), out.extend(pixel_list[86:])
     return out
 
 
