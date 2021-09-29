@@ -15,7 +15,7 @@ import json
 from split_list_into_list_of_len_n_lists import split_list_into_list_of_len_n_lists
 from convert_24_bit_to_8_bit import convert_24_bit_to_8_bit
 
-cd = .25
+cd = .3
 
 
 class Refresh:
